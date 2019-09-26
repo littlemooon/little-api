@@ -1,6 +1,4 @@
-function splitArray(s?: string): string[] {
-  return s ? s.split(',') : []
-}
+import { splitArray } from './lib/utils'
 
 export default {
   token: process.env.TOKEN,

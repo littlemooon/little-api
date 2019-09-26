@@ -1,3 +1,6 @@
+# Build output
+public/bundle.*
+
 # Environment variables
 .env
 

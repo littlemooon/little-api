@@ -1,4 +1,9 @@
 {
+  "include": [
+    "**/*.js",
+    "**/*.ts",
+    "**/*.svelte"
+  ],
   "compilerOptions": {
     "module": "commonjs",
     "target": "esnext",

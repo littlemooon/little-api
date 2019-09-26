@@ -2,6 +2,7 @@ import fetch, { Response } from 'node-fetch'
 import authenticateAndCatch from '../lib/authenticateAndCatch'
 import config from '../config'
 import { startTime, diffTime } from '../lib/measure'
+import { splitArray } from '../lib/utils'
 
 interface MonitorResult {
   success: boolean
@@ -12,9 +13,7 @@ interface MonitorResult {
   error?: any
 }
 
-const validStatuses = config.monitor.validStatuses
-
-function isValidResponse(response: Response): boolean {
+function isValidResponse(validStatuses: string[], response: Response): boolean {
   if (validStatuses.length) {
     return validStatuses.includes(response.status.toString())
   } else {
@@ -24,15 +23,23 @@ function isValidResponse(response: Response): boolean {
 
 export default authenticateAndCatch(__filename, async (req, res) => {
   const date = new Date()
-  const start = startTime()
 
+  const queryUrls = splitArray(req.query.urls)
+  const urls = queryUrls.length ? queryUrls : config.monitor.urls
+
+  const queryValidStatuses = splitArray(req.query.validStatuses)
+  const validStatuses = queryValidStatuses.length
+    ? queryValidStatuses
+    : config.monitor.validStatuses
+
+  const start = startTime()
   const results: MonitorResult[] = await Promise.all(
-    config.monitor.urls.map(async url => {
+    urls.map(async url => {
       const fetchStart = startTime()
       try {
         const response = await fetch(url)
         const time = diffTime(fetchStart)
-        if (isValidResponse(response)) {
+        if (isValidResponse(validStatuses, response)) {
           return {
             url,
             time,
@@ -45,6 +52,9 @@ export default authenticateAndCatch(__filename, async (req, res) => {
             time,
             success: false,
             status: response.status,
+            error: `${
+              response.status
+            } not one of ${validStatuses.toString().replace(',', ', ')}`,
           }
         }
       } catch (error) {
@@ -57,7 +67,7 @@ export default authenticateAndCatch(__filename, async (req, res) => {
   res.status(200).json({
     date,
     time: diffTime(start),
-    config: config.monitor,
+    config: { ...config.monitor, urls },
     results,
   })
 })

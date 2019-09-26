@@ -8,22 +8,43 @@
     "node": "10.x.x"
   },
   "scripts": {
+    "build": "rollup -c",
+    "autobuild": "rollup -c -w",
+    "dev": "run-p start:dev autobuild",
+    "start": "sirv public --single",
+    "start:dev": "sirv public --single --dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix . --ext .js,.ts"
+    "lint": "eslint --fix . --ext .js,.ts",
+    "check": "npx npm-check -u"
   },
   "dependencies": {
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "sirv-cli": "^0.4.4"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^1.3.0",
     "@now/node": "^1.0.0",
     "@types/node-fetch": "^2.5.2",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",
+    "autoprefixer": "^9.6.1",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-prettier": "^3.1.1",
     "husky": "^3.0.5",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^7.0.18",
+    "postcss-import": "^12.0.1",
     "prettier": "^1.18.2",
+    "rollup": "^1.21.4",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-livereload": "^1.0.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^2.0.3",
+    "rollup-plugin-svelte": "^5.1.0",
+    "rollup-plugin-terser": "^5.1.2",
+    "svelte": "^3.12.1",
+    "tailwindcss": "^1.1.2",
     "typescript": "^3.6.3"
   },
   "repository": {
@@ -46,8 +67,30 @@
       "plugin:@typescript-eslint/recommended",
       "prettier/@typescript-eslint",
       "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-var-requires": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/explicit-function-return-type": [
+            "error"
+          ],
+          "@typescript-eslint/no-var-requires": [
+            "error"
+          ]
+        }
+      }
     ]
   },
+  "eslintIgnore": [
+    "**/bundle.*"
+  ],
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5",
