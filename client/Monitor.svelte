@@ -27,7 +27,7 @@
 
   {#if $monitor.state === 'success'}
     <ul>
-      {#each $monitor.data.results as result, i}
+      {#each $monitor.data.results as result}
         <li class="flex items-start mb-4">
           {#if result.success}
             <div
@@ -57,6 +57,22 @@
       {/each}
     </ul>
   {:else if $monitor.state === 'error'}
-    <p class="text-red-600 font-semibold">{$monitor.error}</p>
+    <ul>
+      {#each $monitor.errors as error}
+        <li class="flex items-start mb-4">
+          <div
+            class="flex items-center bg-red-600 text-red-200 px-4 py-0
+            rounded-full mr-4"
+            style="margin-top:3px;">
+            error
+          </div>
+
+          <div class="flex flex-wrap items-baseline">
+            <p class="text-yellow-500 text-xl mr-4">{error.url}</p>
+            <p class="w-full text-red-600 font-semibold">{error.message}</p>
+          </div>
+        </li>
+      {/each}
+    </ul>
   {/if}
 </section>

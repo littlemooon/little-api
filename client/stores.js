@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store'
+import { writable } from 'svelte/store'
 
 function createQueryString(query) {
   if (query) {
@@ -12,35 +12,49 @@ function createQueryString(query) {
   }
 }
 
-function createFetch(url, updateData = (_, data) => data) {
+function createFetch(baseUrl, updateData = (_, data) => data) {
   const { subscribe, update } = writable({
     state: undefined,
-    url,
+    url: baseUrl,
     data: undefined,
-    error: undefined,
+    errors: [],
   })
 
   return {
     subscribe,
     fetch: query => {
+      const url = `${baseUrl}${createQueryString(query)}`
+
       update(prev => ({ ...prev, state: 'loading' }))
-      return fetch(`${url}${createQueryString(query)}`, {
+      return fetch(url, {
         query,
         headers: {
-          Authorization: 'Bearer example-token',
+          Authorization: `Bearer ${AUTH_TOKEN}`,
           accepts: 'application/json',
-          'Content-Type': 'application/json',
         },
       })
         .then(async r => {
-          const data = await r.json()
+          if (r.ok) {
+            const data = await r.json()
+            update(prev => ({
+              ...prev,
+              state: 'success',
+              data: prev.data ? updateData(prev.data, data) : data,
+            }))
+          } else {
+            throw new Error(`Invalid status: ${r.status}`)
+          }
+        })
+        .catch(error => {
           update(prev => ({
             ...prev,
-            state: 'success',
-            data: prev.data ? updateData(prev.data, data) : data,
+            state: 'error',
+            errors: [
+              ...prev.errors,
+              { url: decodeURIComponent(url), message: error.message },
+            ],
           }))
         })
-        .catch(error => update(prev => ({ ...prev, state: 'error', error })))
     },
   }
 }

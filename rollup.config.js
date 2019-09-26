@@ -1,3 +1,4 @@
+import replace from 'rollup-plugin-replace'
 import svelte from 'rollup-plugin-svelte'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
@@ -26,6 +27,10 @@ export default {
       css: css => {
         css.write('public/bundle.css')
       },
+    }),
+
+    replace({
+      AUTH_TOKEN: `"${process.env.AUTH_TOKEN}"`,
     }),
 
     // If you have external dependencies installed from

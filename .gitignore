@@ -3,6 +3,8 @@ public/bundle.*
 
 # Environment variables
 .env
+.env.build
+.env.prod
 
 # Logs
 logs
