@@ -1,6 +1,6 @@
 {
   "env": {
-    "API_TOKEN": "@token",
+    "API_TOKEN": "@api_token",
     "MONITOR_URLS": "@monitor_urls",
     "MONITOR_VALID_STATUSES": "@monitor_valid_statuses"
   },
