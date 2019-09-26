@@ -57,6 +57,6 @@
       {/each}
     </ul>
   {:else if $monitor.state === 'error'}
-    <p>{$monitor.error}</p>
+    <p class="text-red-600 text-2xl font-semibold">{$monitor.error}</p>
   {/if}
 </section>

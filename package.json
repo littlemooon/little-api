@@ -10,6 +10,7 @@
   "scripts": {
     "build": "rollup -c",
     "autobuild": "rollup -c -w",
+    "deploy": "now",
     "dev": "run-p start:dev autobuild",
     "start": "sirv public --single",
     "start:dev": "sirv public --single --dev",
