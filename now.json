@@ -2,7 +2,8 @@
   "env": {
     "API_TOKEN": "@api_token",
     "MONITOR_URLS": "@monitor_urls",
-    "MONITOR_VALID_STATUSES": "@monitor_valid_statuses"
+    "MONITOR_VALID_STATUSES": "@monitor_valid_statuses",
+    "DEBUG": "@debug"
   },
   "build": {
     "env": {

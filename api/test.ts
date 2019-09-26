@@ -1,6 +1,8 @@
-import authenticateAndCatch from '../lib/authenticateAndCatch'
+import handler from '../lib/handler'
+import logger from '../lib/logger'
 
-export default authenticateAndCatch(__filename, (req, res) => {
-  console.log({ body: req.body, headers: req.headers })
+export default handler((req, res) => {
+  const log = logger(__filename, req)
+  log.info('ʕノ•ᴥ•ʔノ %O', { body: req.body, headers: req.headers })
   res.status(200).json(req.body)
 })

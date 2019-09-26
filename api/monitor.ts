@@ -1,8 +1,9 @@
 import fetch, { Response } from 'node-fetch'
-import authenticateAndCatch from '../lib/authenticateAndCatch'
+import handler from '../lib/handler'
 import config from '../config'
 import { startTime, diffTime } from '../lib/measure'
 import { splitArray } from '../lib/utils'
+import logger from '../lib/logger'
 
 interface MonitorResult {
   success: boolean
@@ -21,10 +22,11 @@ function isValidResponse(validStatuses: string[], response: Response): boolean {
   }
 }
 
-export default authenticateAndCatch(__filename, async (req, res) => {
+export default handler(async (req, res) => {
+  const log = logger(__filename, req)
   const date = new Date()
 
-  const queryUrls = splitArray(req.query.urls)
+  const queryUrls = splitArray(req.query.url)
   const urls = queryUrls.length ? queryUrls : config.monitor.urls
 
   const queryValidStatuses = splitArray(req.query.validStatuses)
@@ -40,6 +42,7 @@ export default authenticateAndCatch(__filename, async (req, res) => {
         const response = await fetch(url)
         const time = diffTime(fetchStart)
         if (isValidResponse(validStatuses, response)) {
+          log.info('Success: %s %d  %s', time, response.status, url)
           return {
             url,
             time,
@@ -47,6 +50,7 @@ export default authenticateAndCatch(__filename, async (req, res) => {
             status: response.status,
           }
         } else {
+          log.warn('Failure: %s %d  %s', time, response.status, url)
           return {
             url,
             time,
@@ -59,6 +63,7 @@ export default authenticateAndCatch(__filename, async (req, res) => {
         }
       } catch (error) {
         const time = diffTime(fetchStart)
+        log.error(error, 'Failed to fetch %s', url)
         return { url, time, success: false, error }
       }
     })

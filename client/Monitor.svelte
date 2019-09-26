@@ -7,11 +7,11 @@
   onMount(async () => {
     loading = true
     await Promise.all([
-      monitor.fetch({ urls: 'https://unvanity.com' }),
-      monitor.fetch({
-        urls: 'https://api.unvanity.com',
-      }),
-      monitor.fetch({ urls: 'https://dash.unvanity.com' }),
+      monitor.fetch({ url: 'https://unvanity.com' }),
+      monitor.fetch({ url: 'https://api.unvanity.com' }),
+      monitor.fetch({ url: 'https://dash.unvanity.com' }),
+      monitor.fetch({ url: 'https://transform.foundationtraining.now.sh' }),
+      monitor.fetch({ url: 'https://frapier.littlemooon.now.sh' }),
     ])
     loading = false
   })
