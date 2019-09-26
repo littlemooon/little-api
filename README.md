@@ -2,14 +2,19 @@
 
 Serverless functions that are useful to me
 
-## get started
+## Development
 
 ```bash
 npm i
-
-# local development
 now dev
+```
 
-# deployment
-now
+## Deployment
+
+Deployed to [now](https://zeit.co/foundationtraining/transform)
+
+```bash
+npm run deploy
+npm run deploy:prod
+npm run logs
 ```
