@@ -30,7 +30,7 @@ export default {
     }),
 
     replace({
-      AUTH_TOKEN: `"${process.env.AUTH_TOKEN}"`,
+      API_TOKEN: `"${process.env.API_TOKEN}"`,
     }),
 
     // If you have external dependencies installed from

@@ -1,12 +1,12 @@
 {
   "env": {
-    "AUTH_TOKEN": "@token",
+    "API_TOKEN": "@token",
     "MONITOR_URLS": "@monitor_urls",
     "MONITOR_VALID_STATUSES": "@monitor_valid_statuses"
   },
   "build": {
     "env": {
-      "AUTH_TOKEN": "@auth_token"
+      "API_TOKEN": "@api_token"
     }
   }
 }

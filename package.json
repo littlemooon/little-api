@@ -97,5 +97,11 @@
     "singleQuote": true,
     "trailingComma": "es5",
     "semi": false
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run test"
+    }
   }
 }

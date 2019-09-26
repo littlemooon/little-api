@@ -29,7 +29,7 @@ function createFetch(baseUrl, updateData = (_, data) => data) {
       return fetch(url, {
         query,
         headers: {
-          Authorization: `Bearer ${AUTH_TOKEN}`,
+          Authorization: `Bearer ${API_TOKEN}`,
           accepts: 'application/json',
         },
       })
