@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "alias": "api.littlemooon.com",
   "env": {
     "API_TOKEN": "@api_token",
     "MONITOR_URLS": "@monitor_urls",
