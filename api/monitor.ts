@@ -42,7 +42,7 @@ export default handler(async (req, res) => {
         const response = await fetch(url)
         const time = diffTime(fetchStart)
         if (isValidResponse(validStatuses, response)) {
-          log.info('Success: %s %d  %s', time, response.status, url)
+          log.info('Pass: %d %s %s', response.status, url, time)
           return {
             url,
             time,
@@ -50,7 +50,7 @@ export default handler(async (req, res) => {
             status: response.status,
           }
         } else {
-          log.warn('Failure: %s %d  %s', time, response.status, url)
+          log.warn('Fail: %d %s %s', response.status, url, time)
           return {
             url,
             time,
@@ -66,7 +66,7 @@ export default handler(async (req, res) => {
         log.error(error, 'Failed to fetch %s', url)
         return { url, time, success: false, error }
       }
-    })
+    }),
   )
 
   res.status(200).json({

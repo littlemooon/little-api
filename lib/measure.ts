@@ -2,7 +2,7 @@ type HrTime = [number, number]
 
 export function parseHrtime(
   unit: 'second' | 'milli' | 'micro' | 'nano',
-  hrtime: HrTime
+  hrtime: HrTime,
 ): number {
   switch (unit) {
     case 'second':

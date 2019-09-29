@@ -5,7 +5,7 @@
     "**/*.svelte"
   ],
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
     "target": "esnext",
     "sourceMap": true,
     "strict": true

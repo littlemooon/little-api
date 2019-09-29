@@ -6,20 +6,26 @@ import { startTime, diffTime } from './measure'
 
 type RequestHandler = (
   req: NowRequest,
-  res: NowResponse
+  res: NowResponse,
 ) => Promise<void> | void
 
 type Middleware = (next: RequestHandler) => RequestHandler
 
-const authenticate: Middleware = next => async (req, res) => {
-  const log = logger(__filename, req)
+function validToken(req: NowRequest) {
+  const { query, headers, cookies } = req
+  return (
+    query.token === config.token ||
+    headers.authorization === `Bearer ${config.token}` ||
+    cookies.token === config.token
+  )
+}
 
-  const headers = req.headers
-  if (headers.authorization === `Bearer ${config.token}`) {
+const authenticate: Middleware = next => async (req, res) => {
+  if (validToken(req)) {
     await next(req, res)
   } else {
-    log.warn('Failed auth attempt %O', req.headers)
-    res.status(401).end()
+    logger('auth', req).warn('Failed auth attempt %O', req.headers)
+    res.status(401).end('Unauthorized')
   }
 }
 
@@ -27,12 +33,7 @@ const session: Middleware = next => async (req, res) => {
   const session = uuid()
   req.query = { ...req.query, session }
 
-  const log = logger(__filename, req)
-  log.info('Session start %s %O', session, {
-    date: new Date(),
-    host: req.headers.host,
-    method: req.method,
-    url: req.url,
+  logger('---->', req).info('%s %s %O', req.method, req.url, {
     query: req.query,
     userAgent: req.headers['user-agent'],
   })
@@ -42,18 +43,24 @@ const session: Middleware = next => async (req, res) => {
 
 const tryCatch: Middleware = next => async (req, res) => {
   const start = startTime()
+
   try {
     await next(req, res)
   } catch (error) {
-    const log = logger(__filename, req)
-    log.error(error)
-    res.status(500).end(`${error.name}: ${error.message}`)
+    logger(error.name || 'Error', req).error(error)
+    res.status(500).end(error.message || 'Unknown Server Error')
   }
 
-  const log = logger(__filename, req)
-  log.info('Session end %s %O', req.query.session, {
-    time: diffTime(start),
-  })
+  logger('<----', req).info(
+    '%s %s %s',
+    res.statusCode,
+    req.url,
+    diffTime(start),
+  )
+}
+
+export function handlerNoAuth(next: RequestHandler): RequestHandler {
+  return tryCatch(session(next))
 }
 
 export default function handler(next: RequestHandler): RequestHandler {

@@ -1,10 +1,16 @@
-# Build output
-public/bundle.*
+# Build
+/src/node_modules/@sapper/
+/cypress/screenshots/
+/__sapper__/
+global.css
 
 # Environment variables
 .env
 .env.build
 .env.prod
+
+# OSX
+.DS_Store
 
 # Logs
 logs
