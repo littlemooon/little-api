@@ -1,4 +1,5 @@
 import { NowRequest, NowResponse } from '@now/node'
+import cors from 'cors'
 import config from '../config'
 import logger from './logger'
 import { uuid } from './utils'
@@ -21,7 +22,7 @@ function validToken(req: NowRequest) {
 }
 
 const authenticate: Middleware = next => async (req, res) => {
-  if (validToken(req)) {
+  if (req.method === 'OPTIONS' || validToken(req)) {
     await next(req, res)
   } else {
     logger('auth', req).warn('Failed auth attempt %O', req.headers)
@@ -39,6 +40,10 @@ const session: Middleware = next => async (req, res) => {
   })
 
   await next(req, res)
+}
+
+const crossOrigin: Middleware = next => async (req, res) => {
+  return cors()(req, res, () => next(req, res))
 }
 
 const tryCatch: Middleware = next => async (req, res) => {
@@ -60,9 +65,9 @@ const tryCatch: Middleware = next => async (req, res) => {
 }
 
 export function handlerNoAuth(next: RequestHandler): RequestHandler {
-  return tryCatch(session(next))
+  return tryCatch(crossOrigin(session(next)))
 }
 
 export default function handler(next: RequestHandler): RequestHandler {
-  return tryCatch(session(authenticate(next)))
+  return handlerNoAuth(authenticate(next))
 }
