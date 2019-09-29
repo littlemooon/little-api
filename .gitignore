@@ -1,9 +1,3 @@
-# Build
-/src/node_modules/@sapper/
-/cypress/screenshots/
-/__sapper__/
-global.css
-
 # Environment variables
 .env
 .env.build

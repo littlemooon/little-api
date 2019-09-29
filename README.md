@@ -1,16 +1,12 @@
 # littlebox
 
-Reusable functions and littlemooon site
+Reusable functions
 
 Built with:
 [typescript](http://www.typescriptlang.org/)
 [zeit now](https://zeit.co)
-[svelte](https://svelte.dev/)
-[sapper](https://sapper.svelte.dev/)
-[tailwindcss](https://tailwindcss.com/)
 [eslint](https://eslint.org/)
 [prettier](https://prettier.io/)
-[rollup](https://rollupjs.org/)
 
 ## Development
 
@@ -18,8 +14,6 @@ Built with:
 npm i
 # api and frontend
 now dev
-# frontend only
-npm run dev
 
 npm run test
 npm run lint
@@ -31,6 +25,7 @@ npm run check
 Deployed to [now](https://zeit.co/littlemooon/littlebox)
 
 ```bash
+npm i -g now
 npm run deploy
 npm run deploy:prod
 npm run logs

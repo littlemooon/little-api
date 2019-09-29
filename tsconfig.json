@@ -1,8 +1,7 @@
 {
   "include": [
     "**/*.js",
-    "**/*.ts",
-    "**/*.svelte"
+    "**/*.ts"
   ],
   "compilerOptions": {
     "module": "esnext",
