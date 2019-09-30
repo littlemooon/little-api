@@ -1,5 +1,5 @@
 {
-  "name": "littlebox",
+  "name": "little-api",
   "version": "1.0.0",
   "description": "Reusable functions",
   "author": "fredwright0@gmail.com",
@@ -12,7 +12,7 @@
     "deploy:prod": "now --prod",
     "deploy": "now",
     "lint": "eslint --fix . --ext .js,.ts",
-    "logs": "now logs -f littlebox.littlemooon.now.sh",
+    "logs": "now logs -f little-api.littlemooon.now.sh",
     "test": "echo 'no tests'"
   },
   "dependencies": {
@@ -37,12 +37,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/littlemooon/littlebox.git"
+    "url": "git+https://github.com/littlemooon/little-api.git"
   },
   "bugs": {
-    "url": "https://github.com/littlemooon/littlebox/issues"
+    "url": "https://github.com/littlemooon/little-api/issues"
   },
-  "homepage": "https://github.com/littlemooon/littlebox#readme",
+  "homepage": "https://github.com/littlemooon/little-api#readme",
   "eslintConfig": {
     "env": {
       "node": true,

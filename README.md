@@ -1,4 +1,4 @@
-# littlebox
+# little-api
 
 Reusable functions
 
@@ -22,7 +22,7 @@ npm run check
 
 ## Deployment
 
-Deployed to [now](https://zeit.co/littlemooon/littlebox)
+Deployed to [now](https://zeit.co/littlemooon/little-api)
 
 ```bash
 npm i -g now
