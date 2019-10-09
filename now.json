@@ -3,9 +3,8 @@
   "alias": "api.littlemooon.com",
   "env": {
     "API_TOKEN": "@api_token",
-    "MONITOR_URLS": "@monitor_urls",
-    "MONITOR_VALID_STATUSES": "@monitor_valid_statuses",
-    "DEBUG": "@debug"
+    "DEBUG": "@debug",
+    "MONITOR_SLACK_URL": "@monitor_slack_url"
   },
   "build": {
     "env": {
