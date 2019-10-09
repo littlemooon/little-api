@@ -4,6 +4,8 @@ import config from '../config'
 import { startTime, diffTime } from '../lib/measure'
 import { splitArray } from '../lib/utils'
 import logger from '../lib/logger'
+import { sendToSlack } from '../lib/slack'
+import { NowRequest } from '@now/node'
 
 interface MonitorResult {
   success: boolean
@@ -22,17 +24,66 @@ function isValidResponse(validStatuses: string[], response: Response): boolean {
   }
 }
 
+async function notifySlack(req: NowRequest, results: MonitorResult[]) {
+  const sortedResults = results.sort((a, b) => {
+    return a.success === b.success
+      ? a.time > b.time
+        ? -1
+        : 1
+      : a.success
+      ? 1
+      : -1
+  })
+
+  const failBlocks = sortedResults.reduce<object[]>((acc, r) => {
+    if (r.success) {
+      acc.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: [`*${r.status}* ${r.url} ${r.time}`, r.error]
+            .filter(Boolean)
+            .join('\n'),
+        },
+      })
+    }
+    return acc
+  }, [])
+  const failCount = failBlocks.length
+
+  await sendToSlack(
+    req,
+    config.monitor.slackUrl,
+    JSON.stringify(
+      failCount
+        ? {
+            text: `:apple: @channel ${failCount} of ${sortedResults.length} urls failed`,
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `:apple: @channel *${failCount}* of ${sortedResults.length} urls failed`,
+                },
+              },
+              { type: 'divider' },
+              ...failBlocks,
+            ].filter(Boolean),
+          }
+        : {
+            text: `:green_apple: All ${sortedResults.length} monitored urls passed`,
+          },
+    ),
+  )
+}
+
 export default handler(async (req, res) => {
   const log = logger(__filename, req)
   const date = new Date()
 
-  const queryUrls = splitArray(req.query.url)
-  const urls = queryUrls.length ? queryUrls : config.monitor.urls
-
-  const queryValidStatuses = splitArray(req.query.validStatuses)
-  const validStatuses = queryValidStatuses.length
-    ? queryValidStatuses
-    : config.monitor.validStatuses
+  const urls = splitArray(req.query.url)
+  const validStatuses = splitArray(req.query.status)
+  const shouldSlack = Boolean(req.query.slack)
 
   const start = startTime()
   const results: MonitorResult[] = await Promise.all(
@@ -68,6 +119,10 @@ export default handler(async (req, res) => {
       }
     }),
   )
+
+  if (shouldSlack) {
+    await notifySlack(req, results)
+  }
 
   res.status(200).json({
     date,

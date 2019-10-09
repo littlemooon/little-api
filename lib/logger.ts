@@ -12,9 +12,9 @@ function join(prefix: string, session?: string | string[], name?: string) {
   return [prefix, session && `(${session})`, name].filter(Boolean).join(' ')
 }
 
-export default function logger(filename: string, req?: NowRequest): Logger {
+export default function logger(_name: string, req?: NowRequest): Logger {
   const session = req ? req.query.session : undefined
-  const name = filename.replace(process.env.PWD || '', '').split('.')[0]
+  const name = _name.replace(process.env.PWD || '', '').split('.')[0]
 
   const info = debug(join('•  INFO', session, name))
   const warn = debug(join('△  WARN', session, name))

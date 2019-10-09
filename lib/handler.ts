@@ -43,7 +43,7 @@ const session: Middleware = next => async (req, res) => {
 }
 
 const crossOrigin: Middleware = next => async (req, res) => {
-  return cors()(req, res, () => next(req, res))
+  return cors()(req as any, res as any, () => next(req, res))
 }
 
 const tryCatch: Middleware = next => async (req, res) => {
