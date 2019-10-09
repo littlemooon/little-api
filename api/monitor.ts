@@ -36,7 +36,7 @@ async function notifySlack(req: NowRequest, results: MonitorResult[]) {
   })
 
   const failBlocks = sortedResults.reduce<object[]>((acc, r) => {
-    if (r.success) {
+    if (!r.success) {
       acc.push({
         type: 'section',
         text: {
