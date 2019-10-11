@@ -1,19 +1,13 @@
 import debug from 'debug'
-import { NowRequest } from '@now/node'
+import { Logger, Session } from '../types'
+import storage from './storage'
 
-export interface Logger {
-  info: debug.Debugger
-  warn: debug.Debugger
-  error: debug.Debugger
-  throw: (error: Error, formatter?: any, ...args: any[]) => never
+function join(prefix: string, session?: Session, name?: string) {
+  return [prefix, session && `(${session.id})`, name].filter(Boolean).join(' ')
 }
 
-function join(prefix: string, session?: string | string[], name?: string) {
-  return [prefix, session && `(${session})`, name].filter(Boolean).join(' ')
-}
-
-export default function logger(_name: string, req?: NowRequest): Logger {
-  const session = req ? req.query.session : undefined
+export default function logger(_name = ''): Logger {
+  const session = storage.get('session')
   const name = _name.replace(process.env.PWD || '', '').split('.')[0]
 
   const info = debug(join('•  INFO', session, name))

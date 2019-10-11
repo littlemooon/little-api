@@ -1,16 +1,11 @@
-import { NowRequest, NowResponse } from '@now/node'
+import { NowRequest } from '@now/node'
 import cors from 'cors'
 import config from '../config'
 import logger from './logger'
 import { uuid } from './utils'
 import { startTime, diffTime } from './measure'
-
-type RequestHandler = (
-  req: NowRequest,
-  res: NowResponse,
-) => Promise<void> | void
-
-type Middleware = (next: RequestHandler) => RequestHandler
+import { Middleware, RequestHandler, Session } from '../types'
+import storage from './storage'
 
 function validToken(req: NowRequest) {
   const { query, headers, cookies } = req
@@ -25,21 +20,28 @@ const authenticate: Middleware = next => async (req, res) => {
   if (req.method === 'OPTIONS' || validToken(req)) {
     await next(req, res)
   } else {
-    logger('auth', req).warn('Failed auth attempt %O', req.headers)
+    logger('auth').warn('Failed auth attempt %O', req.headers)
     res.status(401).end('Unauthorized')
   }
 }
 
 const session: Middleware = next => async (req, res) => {
-  const session = uuid()
-  req.query = { ...req.query, session }
+  const start = startTime()
+  const session: Session = { id: uuid(), start }
 
-  logger('---->', req).info('%s %s %O', req.method, req.url, {
-    query: req.query,
-    userAgent: req.headers['user-agent'],
+  storage.run(async () => {
+    storage.set('session', session)
+    const log = logger()
+    const url = req.url ? req.url.split('?')[0] : ''
+
+    log.info('---> %s %s %O', req.method, url, {
+      query: req.query,
+      userAgent: req.headers['user-agent'],
+    })
+
+    await next(req, res)
+    log.info('<--- %s %s %s', res.statusCode, url, diffTime(start))
   })
-
-  await next(req, res)
 }
 
 const crossOrigin: Middleware = next => async (req, res) => {
@@ -47,21 +49,12 @@ const crossOrigin: Middleware = next => async (req, res) => {
 }
 
 const tryCatch: Middleware = next => async (req, res) => {
-  const start = startTime()
-
   try {
     await next(req, res)
   } catch (error) {
-    logger(error.name || 'Error', req).error(error)
+    logger(error.name || 'Error').error(error)
     res.status(500).end(error.message || 'Unknown Server Error')
   }
-
-  logger('<----', req).info(
-    '%s %s %s',
-    res.statusCode,
-    req.url,
-    diffTime(start),
-  )
 }
 
 export function handlerNoAuth(next: RequestHandler): RequestHandler {

@@ -4,7 +4,18 @@
   "env": {
     "API_TOKEN": "@api_token",
     "DEBUG": "@debug",
-    "MONITOR_SLACK_URL": "@monitor_slack_url"
+
+    "MONITOR_SLACK_URL": "@monitor_slack_url",
+    "MONITOR_EMAIL_FROM": "@monitor_email_from",
+    "MONITOR_EMAIL_TO": "@monitor_email_to",
+
+    "JSONBIN_PATH": "@jsonbin_path",
+    "JSONBIN_KEY": "@jsonbin_key",
+
+    "EMAIL_HOST": "@email_host",
+    "EMAIL_PORT": "@email_port",
+    "EMAIL_USER": "@email_user",
+    "EMAIL_PASS": "@email_pass"
   },
   "build": {
     "env": {

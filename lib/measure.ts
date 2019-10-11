@@ -1,4 +1,4 @@
-type HrTime = [number, number]
+import { HrTime } from '../types'
 
 export function parseHrtime(
   unit: 'second' | 'milli' | 'micro' | 'nano',
